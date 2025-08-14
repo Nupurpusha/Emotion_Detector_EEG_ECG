@@ -7,6 +7,7 @@ __pycache__/
 
 # Ignore model files (optional if you don’t want them on GitHub)
 *.pkl
+!emotion_detection_model.pkl
 *.joblib
 
 # Ignore CSV datasets if they are large
