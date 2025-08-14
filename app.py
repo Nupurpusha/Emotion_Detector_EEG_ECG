@@ -3,6 +3,15 @@ import joblib
 import tempfile
 import shutil
 from pathlib import Path
+import sys, os, numpy, sklearn, joblib
+from pathlib import Path
+
+print("Python:", sys.version)
+print("NumPy:", numpy.__version__)
+print("scikit-learn:", sklearn.__version__)
+print("joblib:", joblib.__version__)
+print("Files in /app:", os.listdir(Path(__file__).parent))
+
 
 from eeg import load_eeg
 from ecg import load_ecg
