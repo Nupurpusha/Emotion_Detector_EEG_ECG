@@ -71,7 +71,7 @@ if __name__ == "__main__":
     print(classification_report(y_test, y_pred))
 
     # Save model in current directory with protocol 4 for compatibility
-    model_path = Path(__file__).parent / "emotion_detection_model.pkl"
+    model_path = Path(__file__).parent / "emotion_detection_model_v2.pkl"
     joblib.dump(best_model, model_path, protocol=4)
     print(f"💾 Model saved at: {model_path.resolve()}")
 
