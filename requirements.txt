@@ -9,3 +9,4 @@ uvicorn==0.23.2
 setuptools
 wheel
 python-multipart
+aiofiles==24.1.0
