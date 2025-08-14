@@ -14,23 +14,27 @@ from ecg import load_ecg
 from datafusion import fuse_features
 
 if __name__ == "__main__":
+    print("🔄 Starting model retraining...")
+
     # Load EEG & ECG data
     eeg_features, eeg_labels = load_eeg("EEG_features.csv", n_components=20)
     ecg_features, ecg_labels = load_ecg("ECG_features.csv", n_components=20)
 
-    # Use EEG labels
+    # Use EEG labels (assuming both have same label structure)
     labels = eeg_labels
 
-    # Convert continuous labels to binary
+    # Convert continuous labels to binary using median threshold
     threshold = np.median(labels)
     labels = np.where(labels >= threshold, 1, 0)
 
     # Fuse features
     fused_features = fuse_features(eeg_features, ecg_features)
+    print(f"✅ Fused features shape: {fused_features.shape}, Labels shape: {labels.shape}")
 
-    # Balance data
+    # Balance data using SMOTE
     smote = SMOTE(random_state=42)
     fused_features, labels = smote.fit_resample(fused_features, labels)
+    print(f"✅ After SMOTE: {fused_features.shape}, {labels.shape}")
 
     # Train/test split
     X_train, X_test, y_train, y_test = train_test_split(
@@ -61,11 +65,13 @@ if __name__ == "__main__":
     best_model = grid.best_estimator_
     y_pred = best_model.predict(X_test)
 
-    print(f"Best Params: {grid.best_params_}")
-    print(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
+    print(f"🏆 Best Params: {grid.best_params_}")
+    print(f"📊 Accuracy: {accuracy_score(y_test, y_pred):.4f}")
+    print("📄 Classification Report:")
     print(classification_report(y_test, y_pred))
 
-    # Save model in current directory
+    # Save model in current directory with protocol 4 for compatibility
     model_path = Path(__file__).parent / "emotion_detection_model.pkl"
-    joblib.dump(best_model, model_path)
-    print(f"Model saved at {model_path}")
+    joblib.dump(best_model, model_path, protocol=4)
+    print(f"💾 Model saved at: {model_path.resolve()}")
+
