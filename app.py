@@ -5,6 +5,8 @@ import shutil
 from pathlib import Path
 import sys, os, numpy, sklearn, joblib
 from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 print("Python:", sys.version)
 print("NumPy:", numpy.__version__)
@@ -18,6 +20,15 @@ from ecg import load_ecg
 from datafusion import fuse_features
 
 app = FastAPI(title="Emotion Detection API")
+
+# Serve static UI
+static_dir = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+
+@app.get("/", include_in_schema=False)
+async def read_index():
+    index_path = static_dir / "index.html"
+    return FileResponse(index_path)
 
 # Load trained model
 model_path = Path(__file__).parent / "emotion_detection_model.pkl"

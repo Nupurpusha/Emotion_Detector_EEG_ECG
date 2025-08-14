@@ -11,8 +11,10 @@ def load_ecg(file_path, n_components=None):
     features_scaled = scaler.fit_transform(features)
 
     if n_components:
-        pca = PCA(n_components=n_components, random_state=42)
-        features_scaled = pca.fit_transform(features_scaled)
+        max_components = min(int(n_components), features_scaled.shape[1], features_scaled.shape[0])
+        if max_components > 0:
+            pca = PCA(n_components=max_components, random_state=42)
+            features_scaled = pca.fit_transform(features_scaled)
 
     return features_scaled, labels
 
